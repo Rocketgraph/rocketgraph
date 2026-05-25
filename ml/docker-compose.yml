@@ -1,0 +1,10 @@
+services:
+  ml:
+    build: .
+    image: rocketgraph-ml:latest
+    container_name: rocketgraph-ml
+    ports:
+      - "9020:9020"
+    env_file:
+      - .env
+    restart: unless-stopped

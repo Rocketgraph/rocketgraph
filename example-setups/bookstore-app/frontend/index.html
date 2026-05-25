@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bookstore</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0a0a0a; color: #e5e5e5; min-height: 100vh; }
+    .container { max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem; }
+    h1 { font-size: 1.8rem; font-weight: 700; margin-bottom: 0.25rem; }
+    .subtitle { color: #888; font-size: 0.85rem; margin-bottom: 2rem; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+    .card { border: 1px solid #222; border-radius: 12px; padding: 1.25rem; background: #111; transition: border-color 0.15s; }
+    .card:hover { border-color: #444; }
+    .card-title { font-weight: 600; font-size: 0.95rem; margin-bottom: 0.25rem; }
+    .card-author { color: #888; font-size: 0.8rem; margin-bottom: 0.5rem; }
+    .card-meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; }
+    .price { color: #22c55e; font-weight: 700; font-size: 1.1rem; }
+    .stock { color: #888; font-size: 0.75rem; }
+    .genre { display: inline-block; font-size: 0.65rem; padding: 0.2rem 0.5rem; border-radius: 99px; background: #1e1e1e; color: #aaa; border: 1px solid #333; text-transform: uppercase; letter-spacing: 0.05em; }
+    button { padding: 0.5rem 1rem; border-radius: 8px; border: none; cursor: pointer; font-size: 0.8rem; font-weight: 600; transition: all 0.15s; }
+    .btn-add { background: #e5e5e5; color: #0a0a0a; width: 100%; }
+    .btn-add:hover { background: #fff; }
+    .btn-add:disabled { opacity: 0.3; cursor: not-allowed; }
+    .btn-checkout { background: #22c55e; color: #fff; padding: 0.65rem 1.5rem; font-size: 0.9rem; }
+    .btn-checkout:hover { background: #16a34a; }
+    .btn-checkout:disabled { opacity: 0.4; cursor: not-allowed; }
+    .btn-clear { background: transparent; border: 1px solid #333; color: #888; }
+    .btn-clear:hover { border-color: #666; color: #e5e5e5; }
+    .section-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; }
+    .badge { background: #22c55e; color: #fff; font-size: 0.65rem; padding: 0.15rem 0.5rem; border-radius: 99px; font-weight: 700; }
+    .cart-item { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0; border-bottom: 1px solid #1a1a1a; }
+    .cart-item:last-child { border-bottom: none; }
+    .cart-total { display: flex; justify-content: space-between; padding-top: 0.75rem; margin-top: 0.5rem; border-top: 1px solid #333; font-weight: 700; }
+    .order { border: 1px solid #1a3a1a; border-radius: 12px; padding: 1rem; background: #0a1a0a; margin-bottom: 0.75rem; }
+    .order-id { color: #22c55e; font-weight: 600; font-size: 0.85rem; }
+    .order-total { color: #888; font-size: 0.8rem; }
+    .user-bar { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 2rem; padding: 0.75rem 1rem; background: #111; border: 1px solid #222; border-radius: 10px; }
+    .user-bar label { color: #888; font-size: 0.8rem; }
+    .user-bar input { background: #0a0a0a; border: 1px solid #333; border-radius: 6px; padding: 0.4rem 0.75rem; color: #e5e5e5; font-size: 0.85rem; width: 140px; }
+    .empty { color: #555; font-size: 0.85rem; text-align: center; padding: 2rem; }
+    .toast { position: fixed; bottom: 1.5rem; right: 1.5rem; background: #22c55e; color: #fff; padding: 0.6rem 1.2rem; border-radius: 8px; font-size: 0.8rem; font-weight: 600; opacity: 0; transition: opacity 0.2s; pointer-events: none; }
+    .toast.show { opacity: 1; }
+    .two-col { display: grid; grid-template-columns: 1fr 340px; gap: 2rem; align-items: start; }
+    @media (max-width: 700px) { .two-col { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Bookstore</h1>
+    <p class="subtitle">Browse, add to cart, checkout. All requests hit the Express backend.</p>
+
+    <div class="user-bar">
+      <label>Shopping as:</label>
+      <input id="username" value="luke" placeholder="username" />
+    </div>
+
+    <div class="two-col">
+      <div>
+        <div class="section-title">Books</div>
+        <div class="grid" id="books"></div>
+      </div>
+
+      <div>
+        <div class="section-title">Cart <span class="badge" id="cart-count">0</span></div>
+        <div class="card" style="margin-bottom:1rem">
+          <div id="cart-items"><p class="empty">Cart is empty</p></div>
+          <div id="cart-total" style="display:none" class="cart-total"><span>Total</span><span id="total-amount">$0</span></div>
+          <div style="display:flex;gap:0.5rem;margin-top:0.75rem">
+            <button class="btn-checkout" id="checkout-btn" disabled onclick="checkout()">Checkout</button>
+            <button class="btn-clear" onclick="clearCart()">Clear</button>
+          </div>
+        </div>
+
+        <div class="section-title">Orders</div>
+        <div id="orders"><p class="empty">No orders yet</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const API = 'http://localhost:3001'
+    const user = () => document.getElementById('username').value || 'luke'
+    let books = []
+
+    function toast(msg) {
+      const t = document.getElementById('toast')
+      t.textContent = msg
+      t.classList.add('show')
+      setTimeout(() => t.classList.remove('show'), 2000)
+    }
+
+    async function loadBooks() {
+      const res = await fetch(`${API}/api/books`)
+      books = await res.json()
+      const el = document.getElementById('books')
+      el.innerHTML = books.map(b => `
+        <div class="card">
+          <div class="card-title">${b.title}</div>
+          <div class="card-author">${b.author}</div>
+          <div class="card-meta">
+            <span class="price">$${b.price.toFixed(2)}</span>
+            <span class="stock">${b.stock} in stock</span>
+          </div>
+          <span class="genre">${b.genre}</span>
+          <button class="btn-add" style="margin-top:0.75rem" onclick="addToCart('${b.id}')" ${b.stock === 0 ? 'disabled' : ''}>
+            ${b.stock === 0 ? 'Out of stock' : 'Add to cart'}
+          </button>
+        </div>
+      `).join('')
+    }
+
+    async function addToCart(bookId) {
+      await fetch(`${API}/api/cart/${user()}/add`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ bookId, qty: 1 }),
+      })
+      const book = books.find(b => b.id === bookId)
+      toast(`Added ${book?.title || bookId}`)
+      loadCart()
+    }
+
+    async function loadCart() {
+      const res = await fetch(`${API}/api/cart/${user()}`)
+      const data = await res.json()
+      const items = data.items || []
+      const el = document.getElementById('cart-items')
+      const countEl = document.getElementById('cart-count')
+      const totalEl = document.getElementById('cart-total')
+      const amountEl = document.getElementById('total-amount')
+      const btn = document.getElementById('checkout-btn')
+
+      countEl.textContent = items.reduce((s, i) => s + i.qty, 0)
+
+      if (items.length === 0) {
+        el.innerHTML = '<p class="empty">Cart is empty</p>'
+        totalEl.style.display = 'none'
+        btn.disabled = true
+        return
+      }
+
+      let total = 0
+      el.innerHTML = items.map(i => {
+        const price = i.book ? i.book.price * i.qty : 0
+        total += price
+        return `<div class="cart-item">
+          <span>${i.book?.title || i.bookId} x${i.qty}</span>
+          <span class="price">$${price.toFixed(2)}</span>
+        </div>`
+      }).join('')
+
+      totalEl.style.display = 'flex'
+      amountEl.textContent = `$${total.toFixed(2)}`
+      btn.disabled = false
+    }
+
+    async function checkout() {
+      const res = await fetch(`${API}/api/checkout/${user()}`, { method: 'POST' })
+      if (res.ok) {
+        const order = await res.json()
+        toast(`Order ${order.id} placed — $${order.total}`)
+        loadCart()
+        loadOrders()
+        loadBooks() // refresh stock
+      } else {
+        const err = await res.json()
+        toast(err.error || 'Checkout failed')
+      }
+    }
+
+    async function clearCart() {
+      // No clear endpoint, just reload
+      document.getElementById('cart-items').innerHTML = '<p class="empty">Cart is empty</p>'
+      document.getElementById('cart-total').style.display = 'none'
+      document.getElementById('cart-count').textContent = '0'
+      document.getElementById('checkout-btn').disabled = true
+    }
+
+    async function loadOrders() {
+      const res = await fetch(`${API}/api/orders/${user()}`)
+      const orders = await res.json()
+      const el = document.getElementById('orders')
+      if (orders.length === 0) {
+        el.innerHTML = '<p class="empty">No orders yet</p>'
+        return
+      }
+      el.innerHTML = orders.map(o => `
+        <div class="order">
+          <div style="display:flex;justify-content:space-between">
+            <span class="order-id">${o.id}</span>
+            <span class="order-total">$${o.total.toFixed(2)}</span>
+          </div>
+          <div style="color:#555;font-size:0.75rem;margin-top:0.25rem">${o.items.length} item${o.items.length > 1 ? 's' : ''} · ${new Date(o.createdAt).toLocaleString()}</div>
+        </div>
+      `).join('')
+    }
+
+    // Reload cart/orders when username changes
+    document.getElementById('username').addEventListener('change', () => { loadCart(); loadOrders() })
+
+    // Init
+    loadBooks()
+    loadCart()
+    loadOrders()
+  </script>
+</body>
+</html>

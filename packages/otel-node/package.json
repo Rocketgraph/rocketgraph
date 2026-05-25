@@ -1,0 +1,46 @@
+{
+  "name": "@rgraph/otel-node",
+  "version": "0.4.1",
+  "description": "AI agent that auto-instruments any Node.js backend with OpenTelemetry. Reads your code, understands your setup, writes the right instrumentation.",
+  "license": "MIT",
+  "bin": {
+    "otel-node": "dist/cli.js"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.52.0",
+    "chalk": "^5.4.1",
+    "commander": "^13.1.0",
+    "ora": "^8.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.0",
+    "typescript": "^5.8.0"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "opentelemetry",
+    "otel",
+    "instrumentation",
+    "tracing",
+    "observability",
+    "auto-instrument",
+    "node",
+    "express",
+    "fastify",
+    "nestjs",
+    "koa",
+    "hapi"
+  ]
+}
