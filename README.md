@@ -49,8 +49,7 @@ Two components ship in this repository:
 ## The ML Engine
 
 <p align="center">
-  <em>📽️ Screencast slot: 90-second end-to-end demo — install, point at ClickHouse, see clusters and anomalies.</em><br>
-  <em>Suggested file: <code>images/ml-engine-demo.gif</code></em>
+  <img src="./images/show-clusters.gif" alt="Rocketgraph ML — 2M logs clustered into 58 templates in 90 seconds" width="820">
 </p>
 
 ### What it does
