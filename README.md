@@ -91,13 +91,13 @@ All four are deterministic given the same input. The same window of logs produce
                                     │ pull window (1h | 1d | 7d | absolute)
                                     ▼
                        ┌────────────────────────────┐
-                       │  Mask + Drain3              │  → templates
-                       └─────────────┬───────────────┘
+                       │  Mask + Drain3             │  → templates
+                       └─────────────┬──────────────┘
                                      ▼
         ┌────────────────────────────┴────────────────────────────┐
-        │  Isolation Forest (per service)                          │  → cluster JSON
-        │  + TF-IDF + PCA 2-D layout                               │
-        └────────────────────────────┬─────────────────────────────┘
+        │  Isolation Forest (per service)                         │  → cluster JSON
+        │  + TF-IDF + PCA 2-D layout                              │
+        └────────────────────────────┬────────────────────────────┘
                                      ▼
                        ┌─────────────────────────────┐
                        │  Half-Space-Trees           │  → /anomalies/detect
@@ -123,10 +123,10 @@ uvicorn app:app --port 9020
 
 That is the entire install. There is no agent to deploy, no schema to provision, no upstream account to create.
 
-<p align="center">
+<!-- <p align="center">
   <em>📽️ Screencast slot: from <code>docker compose up</code> to first <code>/clusters</code> response.</em><br>
   <em>Suggested file: <code>images/ml-engine-setup.gif</code></em>
-</p>
+</p> -->
 
 ### Endpoints
 
@@ -208,10 +208,10 @@ Option B is what you want for multi-tenant control planes — pass tenant creden
 
 ## The `otel-node` CLI
 
-<p align="center">
+<!-- <p align="center">
   <em>📽️ Screencast slot: <code>npx @rgraph/otel-node init</code> → agent reads the project → instrumentation written → traces flowing.</em><br>
   <em>Suggested file: <code>images/otel-node-init.gif</code></em>
-</p>
+</p> -->
 
 `@rgraph/otel-node` is an **AI agent that auto-instruments any Node.js backend with OpenTelemetry**. It reads your code, understands your framework and dependencies, and writes the right instrumentation file — replacing what is normally a multi-day, error-prone integration with a 90-second command.
 
