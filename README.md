@@ -19,7 +19,7 @@
   &nbsp;&bull;&nbsp;
   <a href="https://rocketgraph.app">Website</a>
   &nbsp;&bull;&nbsp;
-  <a href="https://discord.gg/YHVnZ5WT">Community</a>
+  <a href="https://discord.gg/dqwkEpSc">Community</a>
 </p>
 
 <p align="center">
@@ -96,7 +96,7 @@ More examples (Fastify, NestJS, Next.js) are on the roadmap — PRs welcome.
 
 ## Community
 
-- 💬 [Discord](https://discord.gg/YHVnZ5WT) — support and design discussions
+- 💬 [Discord](https://discord.gg/dqwkEpSc) — support and design discussions
 - 🐛 [GitHub Issues](https://github.com/Rocketgraph/rocketgraph/issues) — bugs and feature requests
 - 🐦 [@RGraphql](https://twitter.com/RGraphql) — release notes
 
