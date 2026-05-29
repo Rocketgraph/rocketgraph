@@ -1,0 +1,6 @@
+app.log
+*.log
+*.json
+*.ndjson
+*.csv
+!.gitkeep

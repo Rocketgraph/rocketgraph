@@ -4,7 +4,7 @@ Rocketgraph ML — Drain3 clustering + Half-Space-Trees anomaly detection.
 Endpoints
 ─────────
   GET  /clusters
-         ?source=loki|newrelic|datadog|cloudwatch|sentry|clickhouse
+         ?source=loki|newrelic|datadog|cloudwatch|sentry|clickhouse|file
          &window=1h|6h|12h|24h|1d|7d|custom
          &hours=<int>   (when window=custom)
          → Drain3 templates + Isolation-Forest anomaly scores per cluster.
@@ -156,7 +156,7 @@ def _fetch(
 
 @app.get("/clusters", summary="Drain3 clusters + isolation-forest anomalies")
 def get_clusters(
-    source: str        = Query(..., description="loki | newrelic | datadog | cloudwatch | sentry | clickhouse"),
+    source: str        = Query(..., description="loki | newrelic | datadog | cloudwatch | sentry | clickhouse | file"),
     window: str        = Query("6h", description="1h | 6h | 12h | 24h | 1d | 7d | custom"),
     hours:  int | None = Query(None, description="Custom lookback in hours (when window=custom)"),
     start:  str | None = Query(None, description="Absolute ISO-8601 start (UTC). Overrides window. ClickHouse only."),

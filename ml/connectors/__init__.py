@@ -11,7 +11,7 @@ those kwargs and use the rolling lookback. Each row is:
 from datetime import datetime
 from typing import Optional
 
-from . import cloudwatch, clickhouse, datadog, loki, newrelic, sentry
+from . import cloudwatch, clickhouse, datadog, file, loki, newrelic, sentry
 
 REGISTRY = {
     "newrelic":   newrelic.fetch_logs,
@@ -20,6 +20,7 @@ REGISTRY = {
     "cloudwatch": cloudwatch.fetch_logs,
     "sentry":     sentry.fetch_logs,
     "clickhouse": clickhouse.fetch_logs,
+    "file":       file.fetch_logs,
 }
 
 # Connectors that accept absolute (start, end) datetimes via kwargs.
