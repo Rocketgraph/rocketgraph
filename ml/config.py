@@ -58,6 +58,11 @@ class Settings(BaseSettings):
     ch_col_level:      str = "level"
     ch_col_service:    str = "service"
 
+    # ── File (.log on disk) ───────────────────────────────────────────────────
+    file_path:    str = ""
+    file_format:  str = "auto"   # auto | json | text
+    file_service: str = ""        # fallback service name; defaults to file stem
+
     # ── ML knobs ──────────────────────────────────────────────────────────────
     drain_sim_th:          float = 0.4
     anomaly_contamination: float = 0.1
@@ -97,6 +102,11 @@ _CRED_FIELDS = {
         ("token",   "sentry_auth_token"),
         ("org",     "sentry_org"),
         ("project", "sentry_project"),
+    ],
+    "file": [
+        ("path",    "file_path"),
+        ("format",  "file_format"),
+        ("service", "file_service"),
     ],
     "clickhouse": [
         ("url",            "ch_url"),
@@ -161,6 +171,7 @@ def configured_sources() -> dict[str, bool]:
         "cloudwatch": ["access_key_id", "secret_access_key", "log_group"],
         "sentry":     ["token", "org", "project"],
         "clickhouse": ["url"],
+        "file":       ["path"],
     }
     out: dict[str, bool] = {}
     for src, fields in required.items():

@@ -42,7 +42,7 @@ All four are deterministic given the same input. The same window of logs produce
 ```
        ┌───────────────────────────────────────────────────────────┐
        │  Source of record  (Loki / NR / Datadog / CloudWatch /    │
-       │                     Sentry / ClickHouse)                  │
+       │              Sentry / ClickHouse / .log file)             │
        └────────────────────────────┬──────────────────────────────┘
                                     │ pull window (1h | 1d | 7d | absolute)
                                     ▼
@@ -209,7 +209,31 @@ Rocketgraph connects to your existing source of record directly — no data dupl
 | **AWS CloudWatch** | IAM keys | `access_key_id`, `secret_access_key`, `region`, `log_group`, `log_stream` (opt.) |
 | **Sentry** | User auth token | `token` (sntrys_…), `org`, `project` |
 | **ClickHouse** | HTTP basic auth | `url`, `user`, `password`, `database`, `table`, `col_timestamp`, `col_message`, `col_level`, `col_service` |
+| **Log file** | none (local file) | `path`, `format` (`auto`\|`json`\|`csv`\|`text`), `service` |
 | **OpenTelemetry** | OTLP collector | Route into ClickHouse or Loki, then point Rocketgraph at that. See [Routing OpenTelemetry into Rocketgraph](#routing-opentelemetry-into-rocketgraph) below. |
+
+### `source=file` — point at a `.log` file on disk
+
+The zero-infrastructure path. Export logs from whatever you already run (Datadog
+CSV/JSON, `kubectl logs > app.log`, a raw application log), drop the file next to
+the engine, and analyse it with no credentials and no data leaving your machine.
+
+```bash
+# mount the file into the container, then:
+curl -XPOST 'http://localhost:9020/clusters/train?source=file'
+```
+
+```env
+FILE_PATH=/data/app.log     # required — path to the file
+FILE_FORMAT=auto            # auto | json | csv | text  (auto-detects)
+FILE_SERVICE=payment-svc    # optional fallback service name
+```
+
+The connector auto-detects three shapes: Datadog-style NDJSON (fields under an
+`attributes` block), a single JSON array, CSV with a header row, or plain text
+(it sniffs the leading timestamp, level, and `service=` tag per line). The whole
+file is the analysis window — no time range needed. See the runnable
+[log-file quickstart](../example-setups/logfile-quickstart/).
 
 All connectors return the same row shape, so the downstream ML pipeline is identical regardless of source:
 
@@ -344,6 +368,7 @@ Rocketgraph is designed to run inside your network.
 
 | Platform | Status |
 | --- | --- |
+| Log file (`.log` / `.json` / `.csv`) | Supported |
 | OpenTelemetry (logs) | Supported |
 | Grafana Loki | Supported |
 | New Relic | Supported |

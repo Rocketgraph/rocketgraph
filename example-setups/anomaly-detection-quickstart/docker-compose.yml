@@ -1,0 +1,37 @@
+services:
+  clickhouse:
+    image: clickhouse/clickhouse-server:24.3
+    container_name: rg-demo-clickhouse
+    ports:
+      - "8123:8123"
+      - "9000:9000"
+    ulimits:
+      nofile:
+        soft: 262144
+        hard: 262144
+    volumes:
+      - ./init-clickhouse.sql:/docker-entrypoint-initdb.d/init.sql:ro
+
+  ml:
+    image: rocketgraph-ml:latest
+    build:
+      context: ../../ml
+    container_name: rg-demo-ml
+    depends_on:
+      - clickhouse
+    ports:
+      - "9020:9020"
+    environment:
+      CH_URL: http://clickhouse:8123
+      CH_USER: default
+      CH_PASSWORD: ""
+      CH_DATABASE: demo
+      CH_TABLE: logs
+      CH_COL_TIMESTAMP: timestamp
+      CH_COL_MESSAGE: message
+      CH_COL_LEVEL: level
+      CH_COL_SERVICE: service
+      DRAIN_SIM_TH: "0.4"
+      HST_THRESHOLD: "0.7"
+      ANOMALY_CONTAMINATION: "0.1"
+      MAX_ROWS: "500000"

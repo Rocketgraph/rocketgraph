@@ -1,0 +1,21 @@
+services:
+  ml:
+    image: rocketgraph-ml:latest
+    build:
+      context: ../../ml
+    container_name: rg-logfile-ml
+    ports:
+      - "9020:9020"
+    volumes:
+      # Mount your log file(s) read-only into the container at /data.
+      # Drop your own export into ./logs/ (any .log / .json / .ndjson / .csv).
+      - ./logs:/data:ro
+    environment:
+      # Point the file connector at the log file inside the container.
+      FILE_PATH: /data/app.log
+      FILE_FORMAT: auto          # auto | json | csv | text
+      # FILE_SERVICE: my-service # optional fallback service name
+      DRAIN_SIM_TH: "0.4"
+      HST_THRESHOLD: "0.7"
+      ANOMALY_CONTAMINATION: "0.1"
+      MAX_ROWS: "500000"

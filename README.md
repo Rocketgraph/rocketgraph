@@ -63,6 +63,14 @@ Point it at any source you already use:
 curl 'http://localhost:9020/clusters?source=loki&window=1h'
 ```
 
+Or skip the credentials entirely — **download a log file and run it.** Export from Datadog (CSV/JSON), `kubectl logs > app.log`, or any raw log, drop it in, and analyse it locally:
+
+```bash
+curl -XPOST 'http://localhost:9020/clusters/train?source=file'   # FILE_PATH=/data/app.log
+```
+
+See the one-command [log-file quickstart](./example-setups/logfile-quickstart/).
+
 That's the whole install. No schemas to provision, no accounts to create, no agents on hosts.
 
 👉 **Deep dive:** [`ml/README.md`](./ml/README.md) for the ML engine · [`packages/otel-node`](./packages/otel-node) for the OTel agent
@@ -91,7 +99,7 @@ More examples (Fastify, NestJS, Next.js) are on the roadmap — PRs welcome.
 
 | Status | Platforms |
 | --- | --- |
-| ✅ Supported | OpenTelemetry · Loki · New Relic · Datadog · CloudWatch · Sentry · ClickHouse |
+| ✅ Supported | Log file (`.log`/`.json`/`.csv`) · OpenTelemetry · Loki · New Relic · Datadog · CloudWatch · Sentry · ClickHouse |
 | 🛣️ Roadmap | Splunk · Elastic / OpenSearch · Azure Monitor · GCP Cloud Logging |
 
 ## Community

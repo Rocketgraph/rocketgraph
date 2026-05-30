@@ -1,1 +1,5 @@
 .DS_Store
+
+# Draft docs — kept locally, not committed
+BLOG_anomaly_detection.md
+RELEASE_NOTES_v0.4.0.md
